@@ -37,6 +37,16 @@ twig:
     debug:            "%kernel.debug%"
     strict_variables: "%kernel.debug%"
 
+doctrine_mongodb:
+    connections:
+        default:
+            server: "%mongodb_server%"
+            options: {}
+    default_database: tyler
+    document_managers:
+        default:
+            auto_mapping: true
+
 # Doctrine Configuration
 #doctrine:
 #    dbal:
