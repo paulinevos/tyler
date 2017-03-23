@@ -30,7 +30,8 @@
         "doctrine/mongodb-odm": "^1.1",
         "abraham/twitteroauth": "^0.7.2",
         "league/tactician": "^1.0",
-        "league/tactician-bundle": "^0.4.1"
+        "league/tactician-bundle": "^0.4.1",
+        "phpunit/phpunit": "^5.7"
     },
     "require-dev": {
         "sensio/generator-bundle": "^3.0",

@@ -4,6 +4,7 @@ namespace AppBundle\Command;
 
 use Abraham\TwitterOAuth\TwitterOAuth;
 use AppBundle\Document\Tweet;
+use AppBundle\Infrastructure\TweetsImporter;
 use AppBundle\Repository\TweetRepository;
 use Doctrine\ODM\MongoDB\DocumentManager;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
@@ -13,9 +14,9 @@ use Symfony\Component\Console\Output\OutputInterface;
 class ImportTweetsCommand extends ContainerAwareCommand
 {
     /**
-     * @var TwitterOAuth
+     * @var TweetsImporter
      */
-    private $client;
+    private $importer;
 
     /**
      * @var DocumentManager
@@ -30,8 +31,8 @@ class ImportTweetsCommand extends ContainerAwareCommand
     protected function initialize(InputInterface $input, OutputInterface $output)
     {
         $container = $this->getContainer();
-        $this->client = $container->get('twitter_client');
-        $this->odm = $container->get('doctrine.odm.mongodb.document_manager');
+        $this->importer = $container->get('twitter.tweets_importer');
+        $this->persister = $container->get('doctrine.odm.mongodb.document_manager');
         $this->repository = $this->odm->getRepository(Tweet::class);
     }
 
