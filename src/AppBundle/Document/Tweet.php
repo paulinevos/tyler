@@ -7,7 +7,7 @@ use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
 /**
  * Class Tweet
  * @package AppBundle\Document
- * @ODM\Document(repositoryClass="AppBundle\Repository\TweetRepository")
+ * @ODM\Document()
  */
 class Tweet
 {

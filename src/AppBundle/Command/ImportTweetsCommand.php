@@ -2,29 +2,26 @@
 
 namespace AppBundle\Command;
 
-use Abraham\TwitterOAuth\TwitterOAuth;
 use AppBundle\Document\Tweet;
 use AppBundle\Infrastructure\TweetsImporter;
-use AppBundle\Repository\TweetRepository;
-use Doctrine\ODM\MongoDB\DocumentManager;
+use AppBundle\Repository\TweetWriteRepository;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class ImportTweetsCommand extends ContainerAwareCommand
 {
+    const NAME = 'tweets:import';
+    const DESCRIPTION = 'Imports Tweets into database.';
+    const HELP = 'This command imports Tweets from a given user and stores them in the database.';
+
     /**
      * @var TweetsImporter
      */
     private $importer;
 
     /**
-     * @var DocumentManager
-     */
-    private $odm;
-
-    /**
-     * @var TweetRepository
+     * @var TweetWriteRepository
      */
     private $repository;
 
@@ -32,16 +29,14 @@ class ImportTweetsCommand extends ContainerAwareCommand
     {
         $container = $this->getContainer();
         $this->importer = $container->get('twitter.tweets_importer');
-        $this->persister = $container->get('doctrine.odm.mongodb.document_manager');
-        $this->repository = $this->odm->getRepository(Tweet::class);
     }
 
     protected function configure()
     {
         $this
-            ->setName('tweets:import')
-            ->setDescription('Imports Tweets into database.')
-            ->setHelp('This command imports Tweets from a given user and stores them in the database.');
+            ->setName(self::NAME)
+            ->setDescription(self::DESCRIPTION)
+            ->setHelp(self::HELP);
     }
 
     /**
@@ -50,35 +45,13 @@ class ImportTweetsCommand extends ContainerAwareCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $response = $this->client->get('statuses/user_timeline', [
-            "screen_name" => "tylerthecreator",
-            "exclude_replies" => true,
-            "include_rts" => false,
-            "count" => 1
-        ]);
-
-        $tweets = $this->extractTweets($response);
+        $tweets = $this->importer->importData();
 
         foreach ($tweets as $tweet) {
             $this->persistTweet($tweet);
         }
 
         $this->odm->flush();
-    }
-
-    /**
-     * @param array $response
-     * @return array
-     */
-    private function extractTweets(array $response)
-    {
-        $tweets = [];
-
-        foreach ($response as $tweet) {
-            $tweets[] = Tweet::fromApiEntity($tweet);
-        }
-
-        return $tweets;
     }
 
     /**

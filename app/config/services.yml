@@ -7,15 +7,15 @@ services:
    twitter.client:
       class: Abraham\TwitterOAuth\TwitterOAuth
       arguments:
-        - "%twitter.api_key%"
-        - "%twitter.api_secret%"
+        - "%twitter.consumer_key%"
+        - "%twitter.consumer_secret%"
         - "%twitter.access_token%"
         - "%twitter.access_token_secret%"
-#  twitter.tweets_importer:
-#      class: AppBundle\Infrastructure\TweetsImporter
-#      arguments:
-#        - "@twitter.client"
-#  twitter.tweets_persister:
-#      class: AppBundle\Infrastructure\TweetsPersister
-#      arguments:
-#        - "@doctrine.odm.mongodb.document_manager"
+   twitter.tweets_importer:
+      class: AppBundle\Infrastructure\TweetsImporter
+      arguments:
+        - "@twitter.client"
+   twitter.tweets_persister:
+      class: AppBundle\Infrastructure\TweetsPersister
+      arguments:
+        - "@doctrine.odm.mongodb.document_manager"
